@@ -103,6 +103,10 @@ function! s:getVisualSelection() "{{{
 
     let l:lines[-1] = l:lines[-1][:l:column_end - (&selection ==? 'inclusive' ? 1 : 2)]
     let l:lines[0] = l:lines[0][l:column_start - 1:]
+    for l:pattern in ['^ *', '^\t*']
+      let l:prefix_length = min(map(copy(l:lines), { _, line -> strlen(matchstr(line, l:pattern)) }))
+      let l:lines = map(l:lines, { _, line -> line[l:prefix_length:] })
+    endfor
 
     return join(l:lines, "\n")
 
